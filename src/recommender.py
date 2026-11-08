@@ -82,10 +82,11 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
             "'prefer less acoustic', or 'no preference'."
         )
 
+    # Experimental shift: halve genre weight and double energy weight.
     if acoustic_preference == "no preference":
-        genre_weight, mood_weight, energy_weight = 40, 30, 30
+        genre_weight, mood_weight, energy_weight = 20, 30, 60
     else:
-        genre_weight, mood_weight, energy_weight = 35, 25, 25
+        genre_weight, mood_weight, energy_weight = 17.5, 25, 50
 
     genre_match = (
         song["genre"].strip().casefold()

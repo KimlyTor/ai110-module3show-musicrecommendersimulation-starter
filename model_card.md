@@ -98,9 +98,7 @@ Prompts:
 - Ways the scoring might unintentionally favor some users
 -->
 
-The song list is small, so a listener might not find many songs they like. The system needs an exact genre or mood match: “pop” and “indie pop,” for example, count as different. Genre is worth the most points, so a genre match can matter more than a closer mood or energy match. Acousticness only matters if the listener chooses an acoustic preference.
-
-SongsMatcher 1.0 doesn't know what people have actually listened to or enjoyed. It doesn't understand lyrics or why a song might feel meaningful. Its score is just a way to compare the song details in this project; it can't promise someone will like a song.
+The catalog is small, with 20 songs across 17 genres, so many genres have only one example. The system also requires exact genre and mood matches, treating related labels like “pop” and “indie pop” as different. This can limit variety and miss songs a listener might enjoy, especially when their preferences are not well represented in the catalog.
 
 ---
 
@@ -119,9 +117,16 @@ Prompts:
 No need for numeric metrics unless you created some.
 -->
 
-I tried the command-line example with pop, happy, and an energy target of `0.80`. `Sunrise City` came first with `99.40/100`, which made sense because its genre and mood match and its energy is close. I checked that the songs are sorted by score and that the screen shows the score and reasons.
+I tested four profiles: pop/happy with energy `0.80`, rock/sad with energy `0.95`, pop/chill with energy `0.42`, and pop/happy with energy `0.95` plus a preference for acoustic music. I compared the top five from each profile using the current weights, which give energy more points than genre. I was surprised that the pop/chill profile had no songs in common with any of the other profiles' top fives, and that its first choice was lofi rather than pop.
 
-I also checked the score math with and without an acoustic preference. The existing automatic tests pass, but they mostly check the separate `Recommender` class, not the scoring and ranking functions used by the command-line demo. Those parts could use more automatic tests.
+- **Original vs. rock/sad:** Both lists include “Gym Hero” and “Golden Hour Groove,” but the rock/sad list adds “Storm Runner” and “Iron Horizon,” whose energy is close to `0.95`; none of the songs has a sad mood label.
+- **Original vs. pop/chill:** The lists have no songs in common. The chill profile favors chill songs such as “Midnight Coding” and “Library Rain,” whose mood and energy fit, even though their genre is not pop.
+- **Original vs. pop/happy/acoustic:** Both lists include “Sunrise City,” “Rooftop Lights,” and “Gym Hero.” The higher energy target and acoustic bonus change the remaining picks, although energy points still outweigh the acoustic bonus.
+- **Rock/sad vs. pop/chill:** The lists have no songs in common: the first profile seeks high energy and rock, while the second favors chill mood and low energy.
+- **Rock/sad vs. pop/happy/acoustic:** They share “Gym Hero,” “Iron Horizon,” and “Storm Runner,” all high-energy songs. The pop/happy profile instead brings in “Sunrise City” and “Rooftop Lights” for their pop and happy matches.
+- **Pop/chill vs. pop/happy/acoustic:** The lists have no songs in common because the profiles favor different moods and energy levels; the acoustic preference applies only to the pop/happy profile.
+
+These comparisons show the rankings respond to the selected mood and energy, but they do not prove which list is more accurate because I did not compare the results with actual listener feedback.
 
 ---
 
@@ -154,4 +159,4 @@ Prompts:
 - How this changed the way you think about music recommendation apps
 -->
 
-I learned that a music picker can give songs points and put the highest-scoring ones first. Changing which things are worth more points can change the list. I also learned that a high score doesn't mean someone will definitely love a song—it only means the song matches the choices this little project checks. Music apps have to make choices about what to pay attention to, too.
+My biggest learning moment was seeing how changing the scoring weights shifts the scores and can change which songs rank highest, even though the formula is simple. I used an AI coding assistant to help adjust the profiles and weights and describe the results, but I needed to run the program and check the score explanations rather than assume its claims about the rankings were correct. I was surprised that exact matches for genre, mood, and energy can make a short list of songs feel like personalized recommendations, even though the system does not know what a listener actually enjoys. If I extended the project, I would add more songs, account for related genres, and test the recommendations with real listener feedback.
